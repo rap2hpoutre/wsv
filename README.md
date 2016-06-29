@@ -1,5 +1,5 @@
 # wsv
-WSV (Whathever Separated Values) converts a so-called CSV-file to another so-called CSV-file. It just replaces the separator: `,` to `;` or `;` to `|` or `rainbow` to `poney`. It takes care to separator inside delimiter `"` and doe not replace it. This project is useless, I'm just learning Rust.
+WSV (Whathever Separated Values) converts a so-called CSV-file to another so-called CSV-file. It just replaces the separator: `,` to `;` or `;` to `|` or `rainbow` to `poney`. It takes care to separator inside delimiter `"` and does not replace it. This project is useless, I'm just learning Rust.
 
 ## Usage
 ```
