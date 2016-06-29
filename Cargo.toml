@@ -1,0 +1,9 @@
+[package]
+name = "wsv"
+version = "0.1.0"
+authors = ["rap2hpoutre <raphaelht@gmail.com>"]
+
+[dependencies]
+regex = "0.1"
+docopt = "0.6"
+rustc-serialize = "0.3"
