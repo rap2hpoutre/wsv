@@ -86,13 +86,15 @@ fn file_put_contents(filename: &str, contents: &str) {
 // Open a file or die
 fn open_or_die(filename: &str) -> File {
     let path = Path::new(filename);
-    File::open(&path).unwrap_or_else(|why| die(&format!("Couldn't open file {}: {}", path.display(), why.description())))
+    File::open(&path)
+        .unwrap_or_else(|why| die(&format!("Couldn't open file {}: {}", path.display(), why.description())))
 }
 
 // Create a file or die
 fn create_or_die(filename: &str) -> File {
     let path = Path::new(filename);
-    File::create(&path).unwrap_or_else(|why| die(&format!("Couldn't create file {}: {}", path.display(), why.description())))
+    File::create(&path)
+        .unwrap_or_else(|why| die(&format!("Couldn't create file {}: {}", path.display(), why.description())))
 }
 
 // Die with message
