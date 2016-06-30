@@ -42,11 +42,11 @@ fn main() {
                             .unwrap_or_else(|e| e.exit());
 
     // Source text
-    let mut s = file_get_contents(&args.arg_source);
+    let s = file_get_contents(&args.arg_source);
 
     // Destination text
     let after = build_regex( &args.arg_s.unwrap_or_else(|| ",".to_string()) )
-        .replace_all(&mut s, &*match args.arg_d {
+        .replace_all(&s, &*match args.arg_d {
             Some(x) => x + &"$1".to_string(),
             None    => ";$1".to_string(),
         });
