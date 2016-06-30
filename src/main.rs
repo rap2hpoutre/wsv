@@ -45,13 +45,11 @@ fn main() {
     let mut s = file_get_contents(&args.arg_source);
 
     // Destination text
-    let after = build_regex(&match args.arg_s {
-        Some(x) => x,
-        None    => ",".to_string(),
-    }).replace_all(&mut s, &*match args.arg_d {
-        Some(x) => x + &"$1".to_string(),
-        None    => ";$1".to_string(),
-    });
+    let after = build_regex( &args.arg_s.unwrap_or_else(|| ",".to_string()) )
+        .replace_all(&mut s, &*match args.arg_d {
+            Some(x) => x + &"$1".to_string(),
+            None    => ";$1".to_string(),
+        });
 
     // Write file
     file_put_contents(&args.arg_dest, &after);
@@ -65,9 +63,8 @@ fn build_regex(separator: &str) -> Regex {
 
 // Get file contents as string
 fn file_get_contents(filename: &str) -> String {
-    let mut f = open_or_die(filename);
     let mut s = String::new();
-    match f.read_to_string(&mut s) {
+    match open_or_die(filename).read_to_string(&mut s) {
         Err(why) => die(&format!("Couldn't read file {}: {}", filename, why.description())),
         Ok(_) => s,
     }
@@ -75,8 +72,7 @@ fn file_get_contents(filename: &str) -> String {
 
 // Put a string into a file
 fn file_put_contents(filename: &str, contents: &str) {
-    let mut f = create_or_die(filename);
-    match f.write_all(contents.as_bytes()) {
+    match create_or_die(filename).write_all(contents.as_bytes()) {
         Err(why) => die(&format!("Couldn't write file {}: {}", filename, why.description())),
         Ok(_) => println!("Successfully wrote to {}", filename),
     }
@@ -85,16 +81,14 @@ fn file_put_contents(filename: &str, contents: &str) {
 
 // Open a file or die
 fn open_or_die(filename: &str) -> File {
-    let path = Path::new(filename);
-    File::open(&path)
-        .unwrap_or_else(|why| die(&format!("Couldn't open file {}: {}", path.display(), why.description())))
+    File::open(&Path::new(filename))
+        .unwrap_or_else(|why| die(&format!("Couldn't open file {}: {}", filename, why.description())))
 }
 
 // Create a file or die
 fn create_or_die(filename: &str) -> File {
-    let path = Path::new(filename);
-    File::create(&path)
-        .unwrap_or_else(|why| die(&format!("Couldn't create file {}: {}", path.display(), why.description())))
+    File::create(&Path::new(filename))
+        .unwrap_or_else(|why| die(&format!("Couldn't create file {}: {}", filename, why.description())))
 }
 
 // Die with message
