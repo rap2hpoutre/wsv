@@ -58,57 +58,45 @@ fn main() {
 }
 
 // Build regex
-fn build_regex(separator: &String) -> Regex {
+fn build_regex(separator: &str) -> Regex {
     let r = separator.to_string() + r#"([^""# + &separator.to_string() + r#",\r\n]+|"(?:[^"]|"")*")?"#;
     Regex::new(&r).unwrap()
 }
 
 // Get file contents as string
-fn file_get_contents(filename: &String) -> String {
+fn file_get_contents(filename: &str) -> String {
     let mut f = open_or_die(filename);
     let mut s = String::new();
     match f.read_to_string(&mut s) {
-        Err(why) => {
-            println!("Couldn't read file {}: {}", filename, why.description());
-            process::exit(1);
-        },
+        Err(why) => die(&format!("Couldn't read file {}: {}", filename, why.description())),
         Ok(_) => s,
     }
 }
 
 // Put a string into a file
-fn file_put_contents(filename: &String, contents: &String) {
+fn file_put_contents(filename: &str, contents: &str) {
     let mut f = create_or_die(filename);
     match f.write_all(contents.as_bytes()) {
-        Err(why) => {
-            println!("Couldn't create file {}: {}", filename, why.description());
-            process::exit(1);
-        },
+        Err(why) => die(&format!("Couldn't write file {}: {}", filename, why.description())),
         Ok(_) => println!("Successfully wrote to {}", filename),
     }
 }
 
 
 // Open a file or die
-fn open_or_die(filename: &String) -> File {
+fn open_or_die(filename: &str) -> File {
     let path = Path::new(filename);
-    match File::open(&path) {
-        Err(why) => {
-            println!("Couldn't open file {}: {}", path.display(), why.description());
-            process::exit(1);
-        },
-        Ok(file) => file,
-    }
+    File::open(&path).unwrap_or_else(|why| die(&format!("Couldn't open file {}: {}", path.display(), why.description())))
 }
 
 // Create a file or die
-fn create_or_die(filename: &String) -> File {
+fn create_or_die(filename: &str) -> File {
     let path = Path::new(filename);
-    match File::create(&path) {
-        Err(why) => {
-            println!("Couldn't create file {}: {}", path.display(), why.description());
-            process::exit(1);
-        },
-        Ok(file) => file,
-    }
+    File::create(&path).unwrap_or_else(|why| die(&format!("Couldn't create file {}: {}", path.display(), why.description())))
+}
+
+// Die with message
+fn die(message: &str) -> ! {
+    println!("{}", message);
+    process::exit(1);
 }
